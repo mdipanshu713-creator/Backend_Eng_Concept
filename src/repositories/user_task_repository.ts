@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> cc85c28 (Implement user task listing and creation)
 import { pool } from "../lib/db";
 import { Task } from "../types/task";
 
@@ -14,6 +17,7 @@ export async function createTask(
         VALUES ($1, $2)
         RETURNING id, title, status, user_id, created_at, updated_at;
         `,
+<<<<<<< HEAD
         [title, userId]
     );
 
@@ -84,3 +88,12 @@ export async function deleteTask(
 
   return (result.rowCount ?? 0) > 0;
 }
+=======
+        [title, userId] 
+    );
+
+    // 2. Added the return statement to extract the created row
+    // pg (node-postgres) returns rows inside the 'rows' array properties
+    return result.rows[0];
+}
+>>>>>>> cc85c28 (Implement user task listing and creation)

@@ -1,4 +1,5 @@
 import { AppError } from "../errors/AppError";
+<<<<<<< HEAD
 import {
   createTask,
   deleteTask,
@@ -82,4 +83,27 @@ export async function deleteUserTask(
   if(!deleted){
     throw new AppError(404,"Task not found")
   }
+=======
+import { createTask } from "../repositories/user_task_repository";
+import { Task } from "../types/task";
+
+
+
+function validateTitle(title:unknown):string {
+    if(typeof title != 'string' || !title.trim()){
+        throw new AppError(400,"Title is required")
+    }
+    const trimmedTitle = title.trim()
+
+    if(trimmedTitle.length > 100) {
+        throw new AppError(400,'Title must be 100 char or less')
+    }
+    return trimmedTitle
+}
+
+export async function createUserTask(userId:string,title:unknown):Promise<Task> {
+
+    const validTitle = validateTitle(title)
+    return  createTask(userId,validTitle)
+>>>>>>> cc85c28 (Implement user task listing and creation)
 }

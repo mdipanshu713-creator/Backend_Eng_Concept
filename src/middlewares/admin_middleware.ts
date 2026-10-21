@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 import type { Request, Response, NextFunction } from "express";
 import { AppError } from "../errors/AppError";
@@ -21,5 +22,20 @@ export function requireAdmin(
     }
 
     // User is authenticated and is an admin.
+=======
+import type { Request, Response, NextFunction } from "express";
+import { AppError } from "../errors/AppError";
+
+
+export function requireAdmin (
+    req:Request,
+    _res:Response,
+    next:NextFunction
+):void {
+    if(req.user?.role !== 'ADMIN') {
+        next(new AppError(403,"Admin access required .You do not have admin access it seems"))
+        return;
+    }
+>>>>>>> cc85c28 (Implement user task listing and creation)
     next();
 }
