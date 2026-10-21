@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 import { Router } from "express";
 import { authenticate } from "../middlewares/auth_middleware";
@@ -57,3 +58,9 @@ adminTaskRouter.patch("/:taskId/status", async (req, res, next): Promise<void> =
         next(error);
     }
 });
+=======
+import { Router } from "express";
+
+export const userTaskRouter = Router();
+
+>>>>>>> cc85c28 (Implement user task listing and creation)

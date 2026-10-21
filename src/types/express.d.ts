@@ -1,4 +1,3 @@
-
 import type { TokenPayload } from "./user";
 
 declare global {

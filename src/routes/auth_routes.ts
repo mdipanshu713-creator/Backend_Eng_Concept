@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+import { Router, type Request, type Response, type NextFunction } from "express";
+import { loginUser, registerUser } from "../services/auth_service";
+import { authenticate } from "../middlewares/auth_middleware";
+>>>>>>> cc85c28 (Implement user task listing and creation)
 
 import {
   Router,
@@ -68,6 +74,7 @@ authRouter.post(
   }
 );
 
+<<<<<<< HEAD
 // GET /me — get the currently authenticated user's information.
 authRouter.get(
   "/me",
@@ -81,3 +88,16 @@ authRouter.get(
     });
   }
 );
+=======
+// get my current user information 
+// protect your route
+
+authRouter.get("/me", authenticate, (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: {
+      user: req.user,
+    },
+  });
+});
+>>>>>>> cc85c28 (Implement user task listing and creation)
