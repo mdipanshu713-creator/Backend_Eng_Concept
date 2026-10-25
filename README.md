@@ -1,39 +1,6 @@
 # Backend Engineering Capstone Project
 
-A backend engineering project built with Node.js, TypeScript, Express.js, and PostgreSQL. The project focuses on layered architecture, REST API development, authentication, database integration, error handling, structured logging, and containerized development.
-
-## 🚀 Tech Stack
-
-- Runtime: Node.js
-- Language: TypeScript
-- Framework: Express.js
-- Database: PostgreSQL
-- Authentication: JWT (JSON Web Tokens)
-- Password Hashing: bcryptjs
-- Logging: Pino
-- Containerization: Docker and Docker Compose
-- Package Manager: npm
-
-## ✨ Features
-
-- REST API development with Express.js
-- User registration and login
-- Password hashing using bcryptjs
-- JWT-based access-token authentication
-- PostgreSQL integration using connection pooling
-- Separation of repository and service layers
-- Centralized error-handling middleware
-- Structured application logging
-- Environment-based configuration
-- Database migrations
-- Docker Compose configuration
-- User task creation and retrieval
-
-## 📁 Project Structure
-
-# Backend Engineering Capstone Project
-
-A backend engineering project built with Node.js, TypeScript, Express.js, and PostgreSQL. The project focuses on layered architecture, REST API development, authentication, database integration, error handling, structured logging, and containerized development.
+A backend engineering project built with **Node.js, TypeScript, Express.js, and PostgreSQL**. This project focuses on REST API development, JWT authentication, database integration, layered architecture, error handling, structured logging, and containerized development.
 
 ## 🚀 Tech Stack
 
@@ -41,7 +8,7 @@ A backend engineering project built with Node.js, TypeScript, Express.js, and Po
 - **Language:** TypeScript
 - **Framework:** Express.js
 - **Database:** PostgreSQL
-- **Authentication:** JWT (JSON Web Tokens)
+- **Authentication:** JSON Web Tokens (JWT)
 - **Password Hashing:** bcryptjs
 - **Logging:** Pino
 - **Containerization:** Docker and Docker Compose
@@ -49,23 +16,41 @@ A backend engineering project built with Node.js, TypeScript, Express.js, and Po
 
 ## ✨ Features
 
-- REST API development with Express.js
+### Authentication and Authorization
 - User registration and login
 - Password hashing using bcryptjs
 - JWT-based access-token authentication
+- Protected API routes
+- Role-based access control for admin routes
+
+### User Task Management
+- Create tasks
+- Retrieve all tasks belonging to the authenticated user
+- Retrieve a task by ID
+- Update task titles
+- Delete tasks
+- Validate task input and handle missing tasks
+
+### Admin Task Management
+- Retrieve tasks across users
+- Filter tasks by title and status
+- Update task statuses
+- Restrict admin endpoints to authorized administrators
+
+### Backend Engineering
+- RESTful API development
 - PostgreSQL integration using connection pooling
-- Separation of repository and service layers
+- Separation of routes, services, and repositories
 - Centralized error-handling middleware
-- Structured application logging
+- Structured application logging with Pino
 - Environment-based configuration
 - Database migrations
 - Docker Compose configuration
-- User task creation and retrieval
 
 ## 📁 Project Structure
 
-```
-03_Capstone_Project/
+```text
+Backend_Eng_Concept/
 ├── Error_Notes/
 ├── Notes/
 ├── migrations/
@@ -87,57 +72,29 @@ A backend engineering project built with Node.js, TypeScript, Express.js, and Po
 └── README.md
 ```
 
-*Adjust this tree to match the actual files and directories in the repository.*
+*The structure above is illustrative; adjust it to match the actual files in the repository.*
 
 ## ⚙️ Prerequisites
 
-Install the following:
+Install the following tools before getting started:
 
 - [Node.js](https://nodejs.org/)
 - npm
-- [PostgreSQL](https://www.postgresql.org/) or Docker Desktop
-- Git
+- [Git](https://git-scm.com/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) or a local PostgreSQL installation
 
-## 🛠️ Installation
+## 🛠️ Installation and Setup
 
 ### 1. Clone the repository
 
-```
+```bash
 git clone https://github.com/mdipanshu713-creator/Backend_Eng_Concept.git
 cd Backend_Eng_Concept
 ```
 
 ### 2. Install dependencies
 
-```
-npm install
-```
-
-### 3
-
-Adjust this tree to match the actual files and directories in the repository.
-
-## ⚙️ Prerequisites
-
-Install the following:
-
-- [Node.js](https://nodejs.org/?utm_source=chatgpt.com)
-- npm
-- [PostgreSQL](https://www.postgresql.org/?utm_source=chatgpt.com) or Docker Desktop
-- Git
-
-## 🛠️ Installation
-
-### 1. Clone the repository
-
-```
-git clone https://github.com/mdipanshu713-creator/Backend_Eng_Concept.git
-cd Backend_Eng_Concept
-```
-
-### 2. Install dependencies
-
-```
+```bash
 npm install
 ```
 
@@ -147,149 +104,240 @@ Create a `.env` file in the project root using `.env.example` as a reference.
 
 Example configuration:
 
-```
+```env
 NODE_ENV=development
-PORT=3000
+PORT=4000
 DATABASE_URL=postgresql://postgres:your_password@localhost:5432/backend_db
 JWT_ACCESS_SECRET=replace_with_a_secure_random_secret
 JWT_ACCESS_EXPIRES_IN=15m
 LOG_LEVEL=info
 ```
 
-Replace the example credentials and secret with your own local values. Never commit your real `.env` file.
+**Important:** These values are examples. Use the variable names, database port, database name, and settings expected by your actual application configuration. Never commit your real `.env` file or secrets to GitHub.
 
 ### 4. Start PostgreSQL
 
-If you're using Docker Compose, review the configuration and start the required services:
+If your Docker Compose configuration includes PostgreSQL, start the services:
 
-```
+```bash
 docker compose up -d
 ```
 
-If you're using a locally installed PostgreSQL server, ensure that the database specified in `DATABASE_URL` exists.
+Alternatively, start your local PostgreSQL server and create the database configured in your environment variables.
 
 ### 5. Run database migrations
 
-Use the migration command defined in `package.json`. Confirm that your database is running and the environment variables are configured before running migrations.
+Run the migration command configured in your project. Check `package.json` and the `migrations/` directory for the exact command and migration procedure.
 
 ### 6. Start the development server
 
-Run the development script defined in `package.json`. For example, if the project uses `tsx`:
+If your project defines a `dev` script, run:
 
-```
+```bash
 npm run dev
 ```
 
-Check `package.json` for the exact available scripts.
+Check `package.json` for the actual available scripts.
 
-## 🔐 Authentication API
+## 🔐 API Documentation
 
-The following examples assume the authentication router is mounted at `/api/auth`. Verify the actual route registration in your application.
+The following endpoints reflect the route structure developed in this project. All protected endpoints require a valid access token. Admin endpoints additionally require the administrator role.
+
+### Authentication
+
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| POST | `/api/auth/register` | Register a user | Public |
+| POST | `/api/auth/login` | Log in and obtain an access token | Public |
+| GET | `/api/auth/me` | Get the authenticated user's information | Authenticated |
+
+### User Task Management
+
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| POST | `/api/tasks` | Create a task | Authenticated |
+| GET | `/api/tasks` | List the current user's tasks | Authenticated |
+| GET | `/api/tasks/:taskId` | Retrieve a task by ID | Authenticated |
+| PATCH | `/api/tasks/:taskId` | Update a task title | Authenticated |
+| DELETE | `/api/tasks/:taskId` | Delete a task | Authenticated |
+
+### Admin Task Management
+
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| GET | `/api/admin/tasks` | List and filter tasks | Admin |
+| PATCH | `/api/admin/tasks/:taskId/status` | Update a task's status | Admin |
+
+*These paths assume the API router is mounted under `/api`. Confirm the final route registrations and supported status values in the code.*
+
+## 🧪 API Usage Examples
 
 ### Register a user
 
-Endpoint: `POST /api/auth/register`
+**Request**
 
-Request body:
-
+```http
+POST /api/auth/register
+Content-Type: application/json
 ```
+
+```json
 {
   "email": "user@example.com",
   "password": "your_password"
 }
 ```
 
-Expected success status: `201 Created`
+### Log in
 
-The exact response body depends on the implementation in the authentication service and route handler.
+**Request**
 
-### Login
-
-Endpoint: `POST /api/auth/login`
-
-Request body:
-
+```http
+POST /api/auth/login
+Content-Type: application/json
 ```
+
+```json
 {
   "email": "user@example.com",
   "password": "your_password"
 }
 ```
 
-On successful authentication, the API should return an access token if that is the response contract implemented by your application.
+Use the returned access token for protected endpoints.
 
-### Access protected routes
+### Create a task
 
-Include the access token in the HTTP Authorization header:
+**Request**
 
-```
+```http
+POST /api/tasks
 Authorization: Bearer <your_access_token>
+Content-Type: application/json
 ```
 
-Replace the placeholder with the token returned by login.
+```json
+{
+  "title": "Complete backend API"
+}
+```
+
+### Filter admin tasks
+
+**Request**
+
+```http
+GET /api/admin/tasks?search=login&status=OPEN
+Authorization: Bearer <admin_access_token>
+```
+
+The admin listing supports title search and status filtering, subject to the validation rules implemented by the service.
+
+### Update a task status
+
+**Request**
+
+```http
+PATCH /api/admin/tasks/<task_id>/status
+Authorization: Bearer <admin_access_token>
+Content-Type: application/json
+```
+
+```json
+{
+  "status": "RESOLVED"
+}
+```
+
+Use an existing task ID and an administrator's access token. The accepted status values must match those defined in the application.
 
 ## 🧱 Architecture
 
-The project uses a layered backend structure.
+The project follows a layered architecture that separates responsibilities.
 
-- Routes: Define HTTP endpoints and handle request and response flow.
-- Services: Implement business rules, validation, and authentication workflows.
-- Repositories: Encapsulate PostgreSQL queries and data access.
-- Middleware: Handle authentication and centralized error processing.
-- Configuration: Manage environment variables and infrastructure setup.
-- Utilities: Provide reusable functionality such as database connections and logging.
-- Types: Define TypeScript contracts for users, tasks, and Express request extensions.
+| Layer | Responsibility |
+|---|---|
+| Routes | Define API endpoints and handle HTTP requests and responses |
+| Services | Implement business rules, validation, and application logic |
+| Repositories | Execute database queries and manage data access |
+| Middleware | Handle authentication, authorization, and request processing |
+| Configuration | Load environment settings and configure application dependencies |
+| Types | Define TypeScript contracts for users, tasks, and Express request extensions |
+| Error Handling | Standardize application errors and HTTP error responses |
 
-## 🧪 Testing
+### Request Flow
 
-Use Postman or another API client to test the API. Add automated unit and integration tests as the project develops.
-
-Recommended scenarios include:
-
-- Valid user registration
-- Duplicate email registration
-- Password hashing and verification
-- Successful and unsuccessful login
-- Missing, invalid, and expired access tokens
-- Task creation with valid and invalid input
-- Retrieving only the authenticated user's tasks
-- Database failures and consistent error responses
+```text
+Client / Postman
+       |
+       v
+Express Routes
+       |
+       v
+Authentication / Authorization
+       |
+       v
+Service Layer
+       |
+       v
+Repository Layer
+       |
+       v
+PostgreSQL
+```
 
 ## 🔒 Security Practices
 
-- Never commit `.env` files or credentials.
 - Hash passwords before storing them.
+- Keep JWT secrets and database credentials private.
 - Use parameterized SQL queries.
-- Validate incoming request data at runtime.
+- Validate request data before processing it.
 - Verify JWT signatures and expiration.
-- Use HTTPS in production.
-- Keep JWT secrets strong and private.
-- Enforce unique email addresses with a database constraint.
-- Apply authorization checks to protected resources.
-- Avoid exposing internal database details in API errors or logs.
+- Restrict protected routes to authenticated users.
+- Enforce authorization checks on admin endpoints.
+- Ensure users can access only their own tasks.
+- Avoid exposing sensitive database details in error responses.
+- Use HTTPS and secure environment configuration in production.
 
-## 📚 Learning Objectives
+## 🧪 Testing
 
-This project develops practical knowledge of:
+You can test the REST API using [Postman](https://www.postman.com/) or another API client.
+
+Recommended test scenarios include:
+
+- Successful registration and login
+- Duplicate email registration
+- Invalid credentials
+- Missing, invalid, and expired access tokens
+- Task creation with valid and invalid input
+- User task ownership and access restrictions
+- Updating and deleting existing tasks
+- Admin-only endpoint authorization
+- Invalid task status values
+- Missing tasks and database errors
+
+## 📚 Learning Outcomes
+
+This project provides practical experience with:
 
 - Node.js and TypeScript backend development
-- Express.js and REST API design
+- REST API design with Express.js
 - Authentication and authorization
-- PostgreSQL and SQL
-- Layered architecture and separation of concerns
-- Middleware and error handling
-- Logging and debugging
+- PostgreSQL and SQL queries
+- Repository and service patterns
+- Middleware and centralized error handling
+- Structured logging and debugging
+- Environment configuration
 - Database migrations
 - Docker-based development
-- Secure and maintainable backend engineering
+- Secure and maintainable backend design
 
 ## 👨‍💻 Author
 
-Dipanshu Mishra
+**Dipanshu Mishra**
 
-GitHub: [@mdipanshu713-creator](https://github.com/mdipanshu713-creator?utm_source=chatgpt.com)
+GitHub: [@mdipanshu713-creator](https://github.com/mdipanshu713-creator)
 
 ## 📄 License
 
-No license has been specified yet. Add an appropriate license before distributing or permitting reuse of this project. \</WritingBlock>
-
+No license has been specified in this README. Add an appropriate `LICENSE` file if you intend to define how others may use, modify, or distribute this project.
