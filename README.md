@@ -1,7 +1,39 @@
+# Backend Engineering Capstone Project
+
+A backend engineering project built with Node.js, TypeScript, Express.js, and PostgreSQL. The project focuses on layered architecture, REST API development, authentication, database integration, error handling, structured logging, and containerized development.
+
+## 🚀 Tech Stack
+
+- Runtime: Node.js
+- Language: TypeScript
+- Framework: Express.js
+- Database: PostgreSQL
+- Authentication: JWT (JSON Web Tokens)
+- Password Hashing: bcryptjs
+- Logging: Pino
+- Containerization: Docker and Docker Compose
+- Package Manager: npm
+
+## ✨ Features
+
+- REST API development with Express.js
+- User registration and login
+- Password hashing using bcryptjs
+- JWT-based access-token authentication
+- PostgreSQL integration using connection pooling
+- Separation of repository and service layers
+- Centralized error-handling middleware
+- Structured application logging
+- Environment-based configuration
+- Database migrations
+- Docker Compose configuration
+- User task creation and retrieval
+
+## 📁 Project Structure
 
 # Backend Engineering Capstone Project
 
-A backend engineering project built with Node.js, TypeScript, Express.js, and PostgreSQL. This project focuses on clean architecture, REST API development, authentication, database integration, error handling, logging, and containerized development.
+A backend engineering project built with Node.js, TypeScript, Express.js, and PostgreSQL. The project focuses on layered architecture, REST API development, authentication, database integration, error handling, structured logging, and containerized development.
 
 ## 🚀 Tech Stack
 
@@ -19,32 +51,34 @@ A backend engineering project built with Node.js, TypeScript, Express.js, and Po
 
 - REST API development with Express.js
 - User registration and login
-- Password hashing using bcrypt
-- JWT-based access token authentication
-- PostgreSQL database integration using connection pooling
-- Repository and service layer separation
+- Password hashing using bcryptjs
+- JWT-based access-token authentication
+- PostgreSQL integration using connection pooling
+- Separation of repository and service layers
 - Centralized error-handling middleware
 - Structured application logging
 - Environment-based configuration
 - Database migrations
 - Docker Compose configuration
+- User task creation and retrieval
 
 ## 📁 Project Structure
 
-```text
+```
 03_Capstone_Project/
-├── Error_Notes/             # Error explanations and debugging notes
-├── Notes/                   # Backend engineering study notes
-├── migrations/              # Database migration files
+├── Error_Notes/
+├── Notes/
+├── migrations/
 ├── src/
-│   ├── config/              # Application and database configuration
-│   ├── errors/              # Custom application errors
-│   ├── lib/                 # Logger, database and JWT utilities
-│   ├── repositories/        # Database queries
-│   ├── routes/              # API route definitions
-│   ├── services/            # Business logic
-│   └── types/               # TypeScript type definitions
-├── .env.example             # Example environment variables
+│   ├── config/
+│   ├── errors/
+│   ├── lib/
+│   ├── middlewares/
+│   ├── repositories/
+│   ├── routes/
+│   ├── services/
+│   └── types/
+├── .env.example
 ├── .gitignore
 ├── docker-compose.yml
 ├── package.json
@@ -53,11 +87,11 @@ A backend engineering project built with Node.js, TypeScript, Express.js, and Po
 └── README.md
 ```
 
-*Adjust the folder tree to match your actual project structure.*
+*Adjust this tree to match the actual files and directories in the repository.*
 
 ## ⚙️ Prerequisites
 
-Install the following before running the project:
+Install the following:
 
 - [Node.js](https://nodejs.org/)
 - npm
@@ -68,14 +102,42 @@ Install the following before running the project:
 
 ### 1. Clone the repository
 
-```bash
+```
 git clone https://github.com/mdipanshu713-creator/Backend_Eng_Concept.git
 cd Backend_Eng_Concept
 ```
 
 ### 2. Install dependencies
 
-```bash
+```
+npm install
+```
+
+### 3
+
+Adjust this tree to match the actual files and directories in the repository.
+
+## ⚙️ Prerequisites
+
+Install the following:
+
+- [Node.js](https://nodejs.org/?utm_source=chatgpt.com)
+- npm
+- [PostgreSQL](https://www.postgresql.org/?utm_source=chatgpt.com) or Docker Desktop
+- Git
+
+## 🛠️ Installation
+
+### 1. Clone the repository
+
+```
+git clone https://github.com/mdipanshu713-creator/Backend_Eng_Concept.git
+cd Backend_Eng_Concept
+```
+
+### 2. Install dependencies
+
+```
 npm install
 ```
 
@@ -83,9 +145,9 @@ npm install
 
 Create a `.env` file in the project root using `.env.example` as a reference.
 
-Example:
+Example configuration:
 
-```env
+```
 NODE_ENV=development
 PORT=3000
 DATABASE_URL=postgresql://postgres:your_password@localhost:5432/backend_db
@@ -94,23 +156,27 @@ JWT_ACCESS_EXPIRES_IN=15m
 LOG_LEVEL=info
 ```
 
-Replace the example database credentials and JWT secret with your own local values. Never commit your real `.env` file.
+Replace the example credentials and secret with your own local values. Never commit your real `.env` file.
 
-### 4. Set up PostgreSQL
+### 4. Start PostgreSQL
 
-Create the database specified in `DATABASE_URL`, then run the project's database migrations using the migration commands configured in `package.json`.
+If you're using Docker Compose, review the configuration and start the required services:
 
-If your project uses Docker Compose to start PostgreSQL, review `docker-compose.yml` and use the appropriate command:
-
-```bash
+```
 docker compose up -d
 ```
 
-### 5. Start the development server
+If you're using a locally installed PostgreSQL server, ensure that the database specified in `DATABASE_URL` exists.
 
-Use the development script defined in `package.json`. For example, if your project uses `tsx`:
+### 5. Run database migrations
 
-```bash
+Use the migration command defined in `package.json`. Confirm that your database is running and the environment variables are configured before running migrations.
+
+### 6. Start the development server
+
+Run the development script defined in `package.json`. For example, if the project uses `tsx`:
+
+```
 npm run dev
 ```
 
@@ -118,120 +184,112 @@ Check `package.json` for the exact available scripts.
 
 ## 🔐 Authentication API
 
-The authentication routes provide user registration and login.
-
-Assuming the router is mounted at `/api/auth`:
+The following examples assume the authentication router is mounted at `/api/auth`. Verify the actual route registration in your application.
 
 ### Register a user
 
-**Endpoint:** `POST /api/auth/register`
+Endpoint: `POST /api/auth/register`
 
 Request body:
 
-```json
+```
 {
   "email": "user@example.com",
   "password": "your_password"
 }
 ```
 
-Successful response: `201 Created`
+Expected success status: `201 Created`
 
-```json
-{
-  "success": true,
-  "message": "User registered successfully"
-}
-```
+The exact response body depends on the implementation in the authentication service and route handler.
 
 ### Login
 
-**Endpoint:** `POST /api/auth/login`
+Endpoint: `POST /api/auth/login`
 
 Request body:
 
-```json
+```
 {
   "email": "user@example.com",
   "password": "your_password"
 }
 ```
 
-Successful response: `200 OK`
-
-```json
-{
-  "success": true,
-  "data": {
-    "accessToken": "your_jwt_access_token"
-  }
-}
-```
+On successful authentication, the API should return an access token if that is the response contract implemented by your application.
 
 ### Access protected routes
 
-For protected endpoints, send the JWT in the HTTP Authorization header:
+Include the access token in the HTTP Authorization header:
 
-```http
+```
 Authorization: Bearer <your_access_token>
 ```
 
-Replace the placeholder with the access token returned by login.
+Replace the placeholder with the token returned by login.
 
 ## 🧱 Architecture
 
-The project separates responsibilities into layers:
+The project uses a layered backend structure.
 
-- **Routes:** Define API endpoints and connect requests to handlers.
-- **Services:** Implement business logic and authentication workflows.
-- **Repositories:** Execute PostgreSQL queries.
-- **Middleware:** Handle authentication and centralized errors.
-- **Configuration:** Manage environment variables and database setup.
-- **Utilities:** Provide reusable functionality such as JWT signing and logging.
+- Routes: Define HTTP endpoints and handle request and response flow.
+- Services: Implement business rules, validation, and authentication workflows.
+- Repositories: Encapsulate PostgreSQL queries and data access.
+- Middleware: Handle authentication and centralized error processing.
+- Configuration: Manage environment variables and infrastructure setup.
+- Utilities: Provide reusable functionality such as database connections and logging.
+- Types: Define TypeScript contracts for users, tasks, and Express request extensions.
 
 ## 🧪 Testing
 
-Use Postman or another API client to test registration and login.
+Use Postman or another API client to test the API. Add automated unit and integration tests as the project develops.
 
-Verify that:
-- Valid registration creates an account.
-- Duplicate email registration is rejected.
-- Passwords are stored as hashes.
-- Valid login returns an access token.
-- Invalid credentials return an appropriate error.
-- Protected endpoints reject missing or invalid tokens.
+Recommended scenarios include:
+
+- Valid user registration
+- Duplicate email registration
+- Password hashing and verification
+- Successful and unsuccessful login
+- Missing, invalid, and expired access tokens
+- Task creation with valid and invalid input
+- Retrieving only the authenticated user's tasks
+- Database failures and consistent error responses
 
 ## 🔒 Security Practices
 
 - Never commit `.env` files or credentials.
 - Hash passwords before storing them.
 - Use parameterized SQL queries.
-- Validate request bodies.
+- Validate incoming request data at runtime.
 - Verify JWT signatures and expiration.
 - Use HTTPS in production.
-- Use a strong JWT secret and keep it private.
-- Enforce unique email addresses in PostgreSQL.
+- Keep JWT secrets strong and private.
+- Enforce unique email addresses with a database constraint.
+- Apply authorization checks to protected resources.
+- Avoid exposing internal database details in API errors or logs.
 
 ## 📚 Learning Objectives
 
-This project is designed to strengthen practical knowledge of:
+This project develops practical knowledge of:
 
-- Node.js backend development
-- TypeScript and Express.js
-- REST API design
+- Node.js and TypeScript backend development
+- Express.js and REST API design
 - Authentication and authorization
 - PostgreSQL and SQL
+- Layered architecture and separation of concerns
 - Middleware and error handling
 - Logging and debugging
+- Database migrations
 - Docker-based development
-- Maintainable backend architecture
+- Secure and maintainable backend engineering
 
 ## 👨‍💻 Author
 
-**Dipanshu Mishra**
+Dipanshu Mishra
 
-GitHub: [@mdipanshu713-creator](https://github.com/mdipanshu713-creator)
+GitHub: [@mdipanshu713-creator](https://github.com/mdipanshu713-creator?utm_source=chatgpt.com)
 
 ## 📄 License
 
-Add a license before distributing or reusing this project publicly. No license has been specified yet.
+No license has been specified yet. Add an appropriate license before distributing or permitting reuse of this project. \</WritingBlock>
+

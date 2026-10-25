@@ -1,44 +1,60 @@
-import { Router, type Request, type Response, type NextFunction } from "express";
-import { loginUser, registerUser } from "../services/auth_service";
 
-// Create an Express router for authentication endpoints
+import {
+  Router,
+  type Request,
+  type Response,
+  type NextFunction,
+} from "express";
+
+import { loginUser, registerUser } from "../services/auth_service";
+import { authenticate } from "../middlewares/auth_middleware";
+
+// Create an Express router for authentication endpoints.
 export const authRouter = Router();
 
-// POST /register — create a new user account
+// POST /register — create a new user account.
 authRouter.post(
   "/register",
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
-      // Extract email and password from the JSON request body
+      // Extract email and password from the request body.
       const { email, password } = req.body;
 
-      // Call the service to validate details, hash the password, and create the user
+      // Validate details, hash password, and create the user.
       await registerUser(email, password);
 
-      // Return 201 Created when registration succeeds
+      // Return success response.
       res.status(201).json({
         success: true,
         message: "User registered successfully",
       });
     } catch (error) {
-      // Forward errors to the centralized error-handling middleware
+      // Forward errors to the centralized error handler.
       next(error);
     }
   }
 );
 
-// POST /login — authenticate an existing user
+// POST /login — authenticate an existing user.
 authRouter.post(
   "/login",
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
-      // Extract login credentials from the JSON request body
+      // Extract login credentials.
       const { email, password } = req.body;
 
-      // Verify credentials and generate an access token
+      // Verify credentials and generate an access token.
       const { accessToken } = await loginUser(email, password);
 
-      // Return 200 OK and the JWT access token
+      // Return the access token.
       res.status(200).json({
         success: true,
         data: {
@@ -46,8 +62,22 @@ authRouter.post(
         },
       });
     } catch (error) {
-      // Forward errors instead of handling them inside each route
+      // Forward errors to the centralized error handler.
       next(error);
     }
+  }
+);
+
+// GET /me — get the currently authenticated user's information.
+authRouter.get(
+  "/me",
+  authenticate,
+  (req: Request, res: Response): void => {
+    res.status(200).json({
+      success: true,
+      data: {
+        user: req.user,
+      },
+    });
   }
 );
