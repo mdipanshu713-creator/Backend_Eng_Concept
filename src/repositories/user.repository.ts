@@ -51,3 +51,6 @@ export async function findUserByEmailWithPassword(
   // Return the matching user or null if no account exists
   return result.rows[0] ?? null;
 }
+
+
+
