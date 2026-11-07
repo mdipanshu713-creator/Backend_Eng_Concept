@@ -1,51 +1,93 @@
 # Backend Engineering Capstone Project
 
-A backend engineering project built with **Node.js, TypeScript, Express.js, and PostgreSQL**. This project focuses on REST API development, JWT authentication, database integration, layered architecture, error handling, structured logging, and containerized development.
+A backend engineering project built with **Node.js, TypeScript, Express.js, and PostgreSQL**. This project focuses on building scalable and maintainable REST APIs using layered architecture, authentication, file management, caching, background jobs, and external service integrations.
+
+The goal is to apply practical backend engineering concepts through hands-on implementation and API testing.
 
 ## 🚀 Tech Stack
 
-- **Runtime:** Node.js
-- **Language:** TypeScript
-- **Framework:** Express.js
-- **Database:** PostgreSQL
-- **Authentication:** JSON Web Tokens (JWT)
-- **Password Hashing:** bcryptjs
-- **Logging:** Pino
-- **Containerization:** Docker and Docker Compose
-- **Package Manager:** npm
+| Category | Technology |
+|---|---|
+| Runtime | Node.js |
+| Language | TypeScript |
+| Framework | Express.js |
+| Database | PostgreSQL |
+| Authentication | JWT, Google OAuth 2.0 |
+| Password Hashing | bcryptjs |
+| File Upload | Multer |
+| Cloud Storage | Cloudinary |
+| Caching | Redis |
+| Background Jobs | BullMQ |
+| Logging | Pino |
+| Containerization | Docker, Docker Compose |
+| API Testing | Postman |
+| Package Manager | npm |
 
 ## ✨ Features
 
-### Authentication and Authorization
-- User registration and login
-- Password hashing using bcryptjs
-- JWT-based access-token authentication
-- Protected API routes
-- Role-based access control for admin routes
+### 1. Authentication and Authorization
+- User registration and login.
+- Password hashing using bcryptjs.
+- JWT-based access-token authentication.
+- Protected API routes.
+- Role-based access control for admin routes.
+- Google OAuth 2.0 login integration.
 
-### User Task Management
-- Create tasks
-- Retrieve all tasks belonging to the authenticated user
-- Retrieve a task by ID
-- Update task titles
-- Delete tasks
-- Validate task input and handle missing tasks
+### 2. User Task Management
+- Create tasks.
+- Retrieve all tasks belonging to the authenticated user.
+- Retrieve a task by ID.
+- Update task titles.
+- Delete tasks.
+- Validate task input and handle missing tasks.
 
-### Admin Task Management
-- Retrieve tasks across users
-- Filter tasks by title and status
-- Update task statuses
-- Restrict admin endpoints to authorized administrators
+### 3. Admin Task Management
+- Retrieve tasks across users.
+- Filter tasks by title and status.
+- Update task statuses.
+- Restrict admin endpoints to authorized administrators.
 
-### Backend Engineering
-- RESTful API development
-- PostgreSQL integration using connection pooling
-- Separation of routes, services, and repositories
-- Centralized error-handling middleware
-- Structured application logging with Pino
-- Environment-based configuration
-- Database migrations
-- Docker Compose configuration
+### 4. File Upload and Cloudinary Integration
+- File upload handling using Multer.
+- Memory storage for processing uploaded files.
+- File validation and upload size restrictions.
+- Upload images to Cloudinary using `upload_stream`.
+- Reusable Cloudinary upload helper.
+- Store Cloudinary image URLs and public IDs in PostgreSQL.
+- Delete uploaded Cloudinary images when required.
+
+### 5. Banner Management
+- Admin banner creation with image uploads.
+- Fetch banner information.
+- Store image metadata in PostgreSQL.
+- Upload images to Cloudinary.
+- Delete associated Cloudinary images when banners are removed.
+
+### 6. Redis Caching
+- Redis integration using Docker Compose.
+- Banner response caching.
+- Cache-aside pattern.
+- Cache frequently requested banner data.
+- Cache invalidation after create, update, or delete operations.
+- Reduce unnecessary database queries.
+
+### 7. Background Jobs with BullMQ
+- Redis-backed job queues.
+- Producer and worker implementation.
+- Background job processing.
+- Queue-based task execution.
+- Separation of API request handling from time-consuming operations.
+- Foundation for retry handling and asynchronous workflows.
+
+### 8. Backend Engineering
+- RESTful API development.
+- PostgreSQL integration using connection pooling.
+- Separation of routes, controllers, services, and repositories.
+- Centralized error-handling middleware.
+- Structured application logging with Pino.
+- Environment-based configuration.
+- Database migrations.
+- Docker Compose configuration.
 
 ## 📁 Project Structure
 
@@ -62,7 +104,10 @@ Backend_Eng_Concept/
 │   ├── repositories/
 │   ├── routes/
 │   ├── services/
-│   └── types/
+│   ├── types/
+│   ├── queues/
+│   ├── workers/
+│   └── ...
 ├── .env.example
 ├── .gitignore
 ├── docker-compose.yml
@@ -72,16 +117,19 @@ Backend_Eng_Concept/
 └── README.md
 ```
 
-*The structure above is illustrative; adjust it to match the actual files in the repository.*
+*This structure is illustrative. Update it to match the actual implementation in the repository.*
 
 ## ⚙️ Prerequisites
 
-Install the following tools before getting started:
+Install the following tools:
 
 - [Node.js](https://nodejs.org/)
 - npm
 - [Git](https://git-scm.com/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) or a local PostgreSQL installation
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Postman](https://www.postman.com/)
+- Cloudinary account
+- Google OAuth credentials
 
 ## 🛠️ Installation and Setup
 
@@ -107,230 +155,253 @@ Example configuration:
 ```env
 NODE_ENV=development
 PORT=4000
-DATABASE_URL=postgresql://postgres:your_password@localhost:5432/backend_db
+
+DATABASE_URL=postgresql://postgres:your_password@localhost:5435/nodejs-capstone
+
 JWT_ACCESS_SECRET=replace_with_a_secure_random_secret
 JWT_ACCESS_EXPIRES_IN=15m
+
 LOG_LEVEL=info
+
+REDIS_URL=redis://localhost:6385
+
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CALLBACK_URL=http://localhost:4000/api/auth/google/callback
 ```
 
-**Important:** These values are examples. Use the variable names, database port, database name, and settings expected by your actual application configuration. Never commit your real `.env` file or secrets to GitHub.
+**Important:**
+- These are example variable names. Match them with your actual application configuration.
+- Keep `.env` out of version control.
+- Never expose database passwords, JWT secrets, Cloudinary API secrets, or OAuth credentials.
+- Configure your Google OAuth redirect URI in the Google Cloud Console.
 
-### 4. Start PostgreSQL
+### 4. Start PostgreSQL and Redis
 
-If your Docker Compose configuration includes PostgreSQL, start the services:
+Start Docker services:
 
 ```bash
 docker compose up -d
 ```
 
-Alternatively, start your local PostgreSQL server and create the database configured in your environment variables.
+Check running containers:
+
+```bash
+docker compose ps
+```
+
+The example configuration uses:
+
+| Service | Host Port | Container Port |
+|---|---:|---:|
+| PostgreSQL | 5435 | 5432 |
+| Redis | 6385 | 6379 |
+
+Use the actual ports defined in your `docker-compose.yml`. If the Node.js application also runs inside Docker Compose, connect using service names and container ports instead of host ports.
 
 ### 5. Run database migrations
 
-Run the migration command configured in your project. Check `package.json` and the `migrations/` directory for the exact command and migration procedure.
+Execute the migration command configured in your project.
+
+Check `package.json` and the `migrations/` directory for the correct command.
 
 ### 6. Start the development server
-
-If your project defines a `dev` script, run:
 
 ```bash
 npm run dev
 ```
 
-Check `package.json` for the actual available scripts.
+Check `package.json` for the available scripts.
 
-## 🔐 API Documentation
+### 7. Start the BullMQ worker
 
-The following endpoints reflect the route structure developed in this project. All protected endpoints require a valid access token. Admin endpoints additionally require the administrator role.
+If your project uses a separate worker process, start it using the worker script configured in `package.json`.
 
-### Authentication
+For example:
 
-| Method | Endpoint | Description | Access |
-|---|---|---|---|
-| POST | `/api/auth/register` | Register a user | Public |
-| POST | `/api/auth/login` | Log in and obtain an access token | Public |
-| GET | `/api/auth/me` | Get the authenticated user's information | Authenticated |
-
-### User Task Management
-
-| Method | Endpoint | Description | Access |
-|---|---|---|---|
-| POST | `/api/tasks` | Create a task | Authenticated |
-| GET | `/api/tasks` | List the current user's tasks | Authenticated |
-| GET | `/api/tasks/:taskId` | Retrieve a task by ID | Authenticated |
-| PATCH | `/api/tasks/:taskId` | Update a task title | Authenticated |
-| DELETE | `/api/tasks/:taskId` | Delete a task | Authenticated |
-
-### Admin Task Management
-
-| Method | Endpoint | Description | Access |
-|---|---|---|---|
-| GET | `/api/admin/tasks` | List and filter tasks | Admin |
-| PATCH | `/api/admin/tasks/:taskId/status` | Update a task's status | Admin |
-
-*These paths assume the API router is mounted under `/api`. Confirm the final route registrations and supported status values in the code.*
-
-## 🧪 API Usage Examples
-
-### Register a user
-
-**Request**
-
-```http
-POST /api/auth/register
-Content-Type: application/json
+```bash
+npm run worker
 ```
 
-```json
-{
-  "email": "user@example.com",
-  "password": "your_password"
-}
-```
+The command above is an example; use your actual script name.
 
-### Log in
+## 🧠 Core Backend Concepts Implemented
 
-**Request**
+### 1. Layered Architecture
 
-```http
-POST /api/auth/login
-Content-Type: application/json
-```
-
-```json
-{
-  "email": "user@example.com",
-  "password": "your_password"
-}
-```
-
-Use the returned access token for protected endpoints.
-
-### Create a task
-
-**Request**
-
-```http
-POST /api/tasks
-Authorization: Bearer <your_access_token>
-Content-Type: application/json
-```
-
-```json
-{
-  "title": "Complete backend API"
-}
-```
-
-### Filter admin tasks
-
-**Request**
-
-```http
-GET /api/admin/tasks?search=login&status=OPEN
-Authorization: Bearer <admin_access_token>
-```
-
-The admin listing supports title search and status filtering, subject to the validation rules implemented by the service.
-
-### Update a task status
-
-**Request**
-
-```http
-PATCH /api/admin/tasks/<task_id>/status
-Authorization: Bearer <admin_access_token>
-Content-Type: application/json
-```
-
-```json
-{
-  "status": "RESOLVED"
-}
-```
-
-Use an existing task ID and an administrator's access token. The accepted status values must match those defined in the application.
-
-## 🧱 Architecture
-
-The project follows a layered architecture that separates responsibilities.
+The project separates responsibilities across different layers.
 
 | Layer | Responsibility |
 |---|---|
-| Routes | Define API endpoints and handle HTTP requests and responses |
-| Services | Implement business rules, validation, and application logic |
-| Repositories | Execute database queries and manage data access |
-| Middleware | Handle authentication, authorization, and request processing |
-| Configuration | Load environment settings and configure application dependencies |
-| Types | Define TypeScript contracts for users, tasks, and Express request extensions |
-| Error Handling | Standardize application errors and HTTP error responses |
+| Routes | Define API endpoints |
+| Controllers | Handle HTTP requests and responses |
+| Services | Implement business logic |
+| Repositories | Execute database queries |
+| Middleware | Authentication, authorization, and request processing |
+| Config | Environment and application configuration |
+| Lib | Reusable infrastructure clients and helpers |
+| Queues | Add and manage background jobs |
+| Workers | Process queued jobs |
+| Errors | Centralized application error handling |
 
-### Request Flow
+### 2. File Upload Flow
 
 ```text
 Client / Postman
        |
        v
-Express Routes
+Express Route
        |
        v
-Authentication / Authorization
+Multer Middleware
+       |
+       v
+File Validation
+       |
+       v
+Controller
        |
        v
 Service Layer
        |
        v
-Repository Layer
+Cloudinary Upload
        |
        v
 PostgreSQL
 ```
 
-## 🔒 Security Practices
+Multer handles incoming multipart file uploads. The uploaded file is processed from memory and sent to Cloudinary. The database stores the resulting image URL and public ID.
+
+### 3. Redis Cache-Aside Pattern
+
+```text
+Client Request
+      |
+      v
+Check Redis Cache
+      |
+      v
+  Cache Hit?
+   /      \
+ Yes      No
+  |        |
+Return   Query PostgreSQL
+  |        |
+  |      Store in Redis
+  |        |
+   \      /
+    Response
+```
+
+The application checks Redis before querying PostgreSQL. If the data is unavailable in the cache, it fetches the data from the database and stores it in Redis.
+
+Cache invalidation is performed when relevant banner data changes.
+
+### 4. BullMQ Background Job Flow
+
+```text
+API Request
+     |
+     v
+Producer
+     |
+     v
+BullMQ Queue
+     |
+     v
+Redis
+     |
+     v
+Worker
+     |
+     v
+Background Job Processing
+```
+
+The producer adds jobs to a queue, and workers process them asynchronously. This helps separate time-consuming operations from the main API request-response cycle.
+
+### 5. Google OAuth Flow
+
+```text
+Client
+  |
+  v
+Google Login
+  |
+  v
+Google Authorization
+  |
+  v
+OAuth Callback
+  |
+  v
+Verify User Information
+  |
+  v
+Find or Create User
+  |
+  v
+Application Authentication
+```
+
+Google OAuth allows users to authenticate through their Google accounts. The application then establishes its own authentication session or issues application tokens according to its implementation.
+
+## 🔐 Security Practices
 
 - Hash passwords before storing them.
-- Keep JWT secrets and database credentials private.
+- Keep credentials and secrets in environment variables.
 - Use parameterized SQL queries.
-- Validate request data before processing it.
+- Validate request data before processing.
 - Verify JWT signatures and expiration.
-- Restrict protected routes to authenticated users.
-- Enforce authorization checks on admin endpoints.
-- Ensure users can access only their own tasks.
-- Avoid exposing sensitive database details in error responses.
+- Enforce authentication and role-based authorization.
+- Ensure users can access only their own resources.
+- Validate uploaded files and enforce size limits.
+- Avoid exposing sensitive error details.
+- Secure OAuth callback and token-handling flows.
 - Use HTTPS and secure environment configuration in production.
 
-## 🧪 Testing
+## 🧪 API Testing
 
-You can test the REST API using [Postman](https://www.postman.com/) or another API client.
+The REST APIs are tested using Postman.
 
-Recommended test scenarios include:
+Recommended test scenarios:
 
-- Successful registration and login
-- Duplicate email registration
-- Invalid credentials
-- Missing, invalid, and expired access tokens
-- Task creation with valid and invalid input
-- User task ownership and access restrictions
-- Updating and deleting existing tasks
-- Admin-only endpoint authorization
-- Invalid task status values
-- Missing tasks and database errors
+- Successful registration and login.
+- Duplicate email registration.
+- Invalid credentials.
+- Missing, invalid, and expired access tokens.
+- User task CRUD operations.
+- Admin authorization.
+- File upload with valid and invalid files.
+- Banner creation and retrieval.
+- Cloudinary image deletion.
+- Redis cache hit and cache miss.
+- Cache invalidation after banner changes.
+- Background job creation and worker processing.
+- Google OAuth login and callback handling.
+- Database and external service failure scenarios.
 
 ## 📚 Learning Outcomes
 
 This project provides practical experience with:
 
-- Node.js and TypeScript backend development
-- REST API design with Express.js
-- Authentication and authorization
-- PostgreSQL and SQL queries
-- Repository and service patterns
-- Middleware and centralized error handling
-- Structured logging and debugging
-- Environment configuration
-- Database migrations
-- Docker-based development
-- Secure and maintainable backend design
+- Node.js and TypeScript backend development.
+- REST API design using Express.js.
+- JWT authentication and Google OAuth.
+- PostgreSQL and SQL queries.
+- Layered architecture and separation of concerns.
+- File uploads and cloud storage integration.
+- Redis caching and cache invalidation.
+- BullMQ queues and background workers.
+- Docker-based development.
+- Centralized error handling and structured logging.
+- API testing and debugging.
+- Building maintainable backend applications.
 
 ## 👨‍💻 Author
 
@@ -340,4 +411,4 @@ GitHub: [@mdipanshu713-creator](https://github.com/mdipanshu713-creator)
 
 ## 📄 License
 
-No license has been specified in this README. Add an appropriate `LICENSE` file if you intend to define how others may use, modify, or distribute this project.
+No license has been specified. Add a `LICENSE` file if you intend to define how others may use, modify, or distribute this project.
