@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 
-=======
->>>>>>> cc85c28 (Implement user task listing and creation)
 import { pool } from "../lib/db";
-import { Task } from "../types/task";
+import type { Task } from "../types/task";
 
 type TaskRow = Task;
 
@@ -13,11 +10,10 @@ export async function createTask(
 ): Promise<Task> {
     const result = await pool.query<TaskRow>(
         `
-        INSERT INTO support_tasks(title, user_id)
+        INSERT INTO support_tasks (title, user_id)
         VALUES ($1, $2)
-        RETURNING id, title, status, user_id, created_at, updated_at;
+        RETURNING id, title, status, user_id, created_at, updated_at
         `,
-<<<<<<< HEAD
         [title, userId]
     );
 
@@ -32,7 +28,7 @@ export async function fetchTaskByUserId(
         SELECT id, title, status, user_id, created_at, updated_at
         FROM support_tasks
         WHERE user_id = $1
-        ORDER BY created_at DESC;
+        ORDER BY created_at DESC
         `,
         [userId]
     );
@@ -40,60 +36,51 @@ export async function fetchTaskByUserId(
     return result.rows;
 }
 
-
 export async function findTaskByIdAndUserId(
-    taskId : string ,userId:string
-):Promise<Task | null > {
-    const result = await pool.query<TaskRow> (
-        `SELECT id,title,status,user_id,created_at,updated_at
+    taskId: string,
+    userId: string
+): Promise<Task | null> {
+    const result = await pool.query<TaskRow>(
+        `
+        SELECT id, title, status, user_id, created_at, updated_at
         FROM support_tasks
         WHERE id = $1 AND user_id = $2
         `,
-        [taskId,userId]
+        [taskId, userId]
     );
-    return result.rows[0] ?? null
+
+    return result.rows[0] ?? null;
 }
 
-
-// Update a task title only if it belongs to the specified user.
 export async function updateTaskTitle(
-  taskId: string,
-  userId: string,
-  title: string
+    taskId: string,
+    userId: string,
+    title: string
 ): Promise<Task | null> {
-  const result = await pool.query<TaskRow>(
-    `UPDATE support_tasks
-     SET title = $1, updated_at = NOW()
-     WHERE id = $2 AND user_id = $3
-     RETURNING id, title, status, created_at, updated_at`,
-    [title, taskId, userId]
-  );
+    const result = await pool.query<TaskRow>(
+        `
+        UPDATE support_tasks
+        SET title = $1, updated_at = NOW()
+        WHERE id = $2 AND user_id = $3
+        RETURNING id, title, status, user_id, created_at, updated_at
+        `,
+        [title, taskId, userId]
+    );
 
-  // Return the updated task, or null if no matching task exists.
-  return result.rows[0] ?? null;
+    return result.rows[0] ?? null;
 }
-
 
 export async function deleteTask(
-  taskId: string,
-  userId: string
+    taskId: string,
+    userId: string
 ): Promise<boolean> {
-  const result = await pool.query(
-    `
-    DELETE FROM support_tasks
-    WHERE id = $1 AND user_id = $2
-    `,
-    [taskId, userId]
-  );
-
-  return (result.rowCount ?? 0) > 0;
-}
-=======
-        [title, userId] 
+    const result = await pool.query(
+        `
+        DELETE FROM support_tasks
+        WHERE id = $1 AND user_id = $2
+        `,
+        [taskId, userId]
     );
 
-    // 2. Added the return statement to extract the created row
-    // pg (node-postgres) returns rows inside the 'rows' array properties
-    return result.rows[0];
+    return (result.rowCount ?? 0) > 0;
 }
->>>>>>> cc85c28 (Implement user task listing and creation)

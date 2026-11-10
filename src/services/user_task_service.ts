@@ -1,109 +1,83 @@
+
 import { AppError } from "../errors/AppError";
-<<<<<<< HEAD
 import {
-  createTask,
-  deleteTask,
-  fetchTaskByUserId,
-  findTaskByIdAndUserId,
-  updateTaskTitle,
+    createTask,
+    deleteTask,
+    fetchTaskByUserId,
+    findTaskByIdAndUserId,
+    updateTaskTitle,
 } from "../repositories/user_task_repository";
-import { Task } from "../types/task";
+import type { Task } from "../types/task";
 
-// Validate the title and remove unnecessary whitespace.
+// Validate and normalize task title
 function validateTitle(title: unknown): string {
-  if (typeof title !== "string" || !title.trim()) {
-    throw new AppError(400, "Title is required");
-  }
+    if (typeof title !== "string" || !title.trim()) {
+        throw new AppError(400, "Title is required");
+    }
 
-  const trimmedTitle = title.trim();
+    const trimmedTitle = title.trim();
 
-  if (trimmedTitle.length > 100) {
-    throw new AppError(400, "Title must be 100 char or less");
-  }
+    if (trimmedTitle.length > 100) {
+        throw new AppError(400, "Title must be 100 characters or less");
+    }
 
-  return trimmedTitle;
+    return trimmedTitle;
 }
 
-// Create a task for the authenticated user.
+// Create a task
 export async function createUserTask(
-  userId: string,
-  title: unknown
+    userId: string,
+    title: unknown
 ): Promise<Task> {
-  const validTitle = validateTitle(title);
-  return createTask(userId, validTitle);
+    const validTitle = validateTitle(title);
+    return createTask(userId, validTitle);
 }
 
-// Fetch all tasks belonging to the user.
+// Get all tasks for a user
 export async function getUserTasks(
-  userId: string
+    userId: string
 ): Promise<Task[]> {
-  return fetchTaskByUserId(userId);
+    return fetchTaskByUserId(userId);
 }
 
-// Fetch one task only if it belongs to the user.
+// Get one task belonging to a user
 export async function getUserTasksById(
-  taskId: string,
-  userId: string
+    taskId: string,
+    userId: string
 ): Promise<Task> {
-  const task = await findTaskByIdAndUserId(taskId, userId);
+    const task = await findTaskByIdAndUserId(taskId, userId);
 
-  if (!task) {
-    throw new AppError(404, "Task not found");
-  }
+    if (!task) {
+        throw new AppError(404, "Task not found");
+    }
 
-  return task;
+    return task;
 }
 
-// Update a task title only if it belongs to the user.
+// Update a task title
 export async function updateUserTask(
-  taskId: string,
-  userId: string,
-  title: unknown
+    taskId: string,
+    userId: string,
+    title: unknown
 ): Promise<Task> {
-  const validTitle = validateTitle(title);
+    const validTitle = validateTitle(title);
+    const task = await updateTaskTitle(taskId, userId, validTitle);
 
-  // Wait for the database update to finish.
-  const task = await updateTaskTitle(taskId, userId, validTitle);
+    if (!task) {
+        throw new AppError(404, "Task not found");
+    }
 
-  // Return 404 if the task doesn't exist or isn't owned by the user.
-  if (!task) {
-    throw new AppError(404, "Task not found");
-  }
-
-  return task;
+    return task;
 }
 
-
+// Delete a task
 export async function deleteUserTask(
-  taskId:string,
-  userId:string
-):Promise<void> {
-  const deleted  =  await deleteTask(taskId,userId)
+    taskId: string,
+    userId: string
+): Promise<void> {
+    const deleted = await deleteTask(taskId, userId);
 
-  if(!deleted){
-    throw new AppError(404,"Task not found")
-  }
-=======
-import { createTask } from "../repositories/user_task_repository";
-import { Task } from "../types/task";
-
-
-
-function validateTitle(title:unknown):string {
-    if(typeof title != 'string' || !title.trim()){
-        throw new AppError(400,"Title is required")
+    if (!deleted) {
+        throw new AppError(404, "Task not found");
     }
-    const trimmedTitle = title.trim()
-
-    if(trimmedTitle.length > 100) {
-        throw new AppError(400,'Title must be 100 char or less')
-    }
-    return trimmedTitle
-}
-
-export async function createUserTask(userId:string,title:unknown):Promise<Task> {
-
-    const validTitle = validateTitle(title)
-    return  createTask(userId,validTitle)
->>>>>>> cc85c28 (Implement user task listing and creation)
 }

@@ -1,11 +1,16 @@
 import { AppError } from "../errors/AppError";
+import { getGoogleAuthUrl, getGoogleUserFromAuthCode } from "../lib/google";
 import { signAccessToken } from "../lib/jwt";
 import {
   findUserByEmail,
   createUser,
   findUserByEmailWithPassword,
+  findUserByGoogleId,
+  linkGoogleIduser,
+  createGoogleUser,
 } from "../repositories/user.repository";
 import bcrypt from "bcryptjs";
+import { User } from "../types/user";
 
 // Register a new user account
 export async function registerUser(
@@ -80,3 +85,42 @@ export async function loginUser(
   // Return the token to the route handler
   return { accessToken };
 }
+
+
+export function startGoogleLogin():string{
+  return getGoogleAuthUrl()
+}
+
+function createAccessTokenForUser(user:User):string{
+  return signAccessToken({
+    userId:user.id,
+    email:user.email,
+    role:user.role
+  })
+}
+
+export async function loginWithGoogle(code:string):Promise<{accessToken:string}>{
+  const googleProfile = await getGoogleUserFromAuthCode(code)
+  
+  let user = await findUserByGoogleId(googleProfile.googleId)
+   
+  if(!user){
+    user = await findUserByEmail(googleProfile.email)
+
+    if(user){
+      // link this google account to the existing email user
+      // first time login - create the user in postgresDB
+
+      user = await linkGoogleIduser(user.id,googleProfile.googleId)
+    } else {
+      // first time login - create the user in postgresDB
+      user = await createGoogleUser(googleProfile.email,googleProfile.googleId)
+    }
+  }
+
+  const accessToken = createAccessTokenForUser(user);
+
+  return {accessToken};
+
+}
+

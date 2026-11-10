@@ -11,3 +11,6 @@
       │
       ▼
  4.Repositories (e.g., admin.task.repository.ts) ──► Fetches/Updates database
+
+
+ 5. lib folder stores reusable libraries, shared integrations, and infrastructure-related functionality.
